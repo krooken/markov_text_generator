@@ -1,0 +1,295 @@
+/*
+
+~~ Snowball Poem ~~
+Snowball (also called a Chaterism): A poem in which each line is a single word,
+and each successive word is one letter longer. One of the constrained writing
+techniques invented by the Oulipo (Workshop of Potential Literature).
+
+
+~~ Program Description ~~
+This program takes input from the file "input-raw.txt". It examines the file for
+any word pairs which vary in length by one letter, eg. "any word", "word pairs".
+
+To get the final Snowball poem, it starts at a one letter word ("A", "I", "O")
+and randomly traverses a Markov tree that links the second of one pair to the
+first of another if they are the same word. It then repeats this process,
+stopping when it reaches a dead branch.
+
+
+~~ Features ~~
+The code scans through the input file, and examine each whitespace-separated
+word. If the word contains punctuation or numbers then it is ignored. This
+means that it also does not word pair between line breaks. This may perhaps be
+an issue with books from Project Gutenburg; as their text files are fixed width,
+we could be missing some word pairs, but it's not a big problem.
+
+
+~~ Bugs ~~
+Minor: The input from "input-raw.txt" does not correctly read the very final
+word pair in the file. Not a very big deal, as it's only one word pair that is
+being missed.
+
+
+~~ Input File ~~
+The text that I used is a bunch of novels from Project Gutenburg, all collated
+into one file. Because of the prevalence of named characters, I have found it
+beneficial to remove instances of the character names, or other things that are
+specific only to the text. They look kinda rubbish when they work their way
+into Snowballs.
+
+In my input file I replace all names with the string "xxxxxx". The code then
+ignores any words in the input that equal this string. This could be automated
+in future by comparing each word to see if it is in a dictionary.
+
+
+~~ Output Files ~~
+The program produces three output files:
+"output-wordPairs.txt" lists all word pairs, in the order that they appear in
+the input file.
+"output-followingWords.txt" lists all word pairs as a map with each following
+word underneath. The keys are in alphabetical order.
+"output-lengthOfWords.txt" lists all words first by length, and then by the
+order that they appear in the input file.
+"output-snowballPoems-1364561431.txt" (where the numbers are a timestamp) is the
+final output of all the created poems.
+
+
+~~ Sample Snowball Output ~~
+Beware! The output will, for the most part, be absolute rubbish. But there will
+be wheat in the chaff. These are some actual unedited generated poems. The input
+was mostly Dickens.
+
+i
+am
+but
+dust
+which
+seemed
+nothing
+whatever
+
+o
+my
+two
+feet
+again
+walked
+through
+profound
+solemnity
+
+i
+am
+the
+dawn
+light
+before
+anybody
+expected
+something
+disorderly
+
+i
+do
+not
+like
+being
+hungry
+
+*/
+
+#include <algorithm>
+#include <time.h>
+
+#include <iostream>
+#include <fstream>
+#include <sstream>
+
+#include <string>
+#include <vector>
+#include <map>
+
+using namespace std;
+
+int main () {
+  vector< vector<string> > wordPairs;
+
+  ifstream inputFile;
+  inputFile.open ("input-raw.txt");
+
+  // Loop through the raw input file.
+  if (inputFile.is_open()) {
+    while ( inputFile.good() ) {
+      string previousWord;
+      string line;
+      getline (inputFile,line);
+      istringstream iss(line);
+
+      do {
+
+        // Examine each individual word.
+        string word;
+        iss >> word;
+        if (!word.empty()) {
+
+          // Make the word lowercase.
+          std::transform(word.begin(), word.end(), word.begin(), ::tolower);
+
+          // Figure out if the word contains punctuation.
+          int punctCount = 0;
+          for (string::iterator it = word.begin(); it!=word.end(); ++it)
+            if ( !isalpha(*it) )  ++punctCount;
+
+          // If the word contains punctuation, then drop it for now.
+          // Also get rid of names and stuff that's specific to the input text.
+          // (So in the input file, replace "Jarndyce", "Pickwick", "Scrooge",
+          //  etc. with "xxxxxx")
+          if ( (punctCount != 0) || (word == "xxxxxx") ){
+            word = "";
+
+          } else {
+
+            // If we have found a single letter separated pair, add to the vector.
+            if ( (previousWord.length() != 0) && (word.length() == previousWord.length()+1) ) {
+              vector<string> singleWordPair;
+              singleWordPair.push_back(previousWord);
+              singleWordPair.push_back(word);
+              wordPairs.push_back(singleWordPair);
+            }
+          }
+
+          previousWord = word;
+        }
+      } while (iss) ;
+
+    }
+    inputFile.close();
+  }
+
+  // Read it back out to a file
+  ofstream outputFile;
+  outputFile.open ("output-wordPairs.txt");
+  for(unsigned int i=0; i < wordPairs.size() - 1; i++) {
+    for(unsigned int j=0; j < wordPairs[i].size() ; j++) {
+      outputFile << wordPairs[i][j] << " ";
+    } outputFile << endl;
+  }
+  outputFile.close();
+
+
+
+  /*map<int,vector<string> > lengthOfWords;
+    [wordLength], [wordsVector]
+    {1},          {a, i, o}
+    {2},          {it, am, to, do, we}
+    {3},          {who, are, you, may}
+  */
+
+  // Add to lengthOfWords map
+  map<int,vector<string> > lengthOfWords;
+  for(unsigned int i=0; i < wordPairs.size() - 1; i++) {
+    string firstWord = wordPairs[i][0];
+    int wordLength = firstWord.length();
+    lengthOfWords[wordLength].push_back(firstWord);
+  }
+
+  // Print the map to a file
+  outputFile.open ("output-lengthOfWords.txt");
+  for(map<int,vector<string> >::iterator iterator = lengthOfWords.begin();
+              iterator != lengthOfWords.end();
+              iterator++) {
+    outputFile << "Key:    " << iterator->first << endl;
+    outputFile << "Values: ";
+    vector<string> wordList = iterator->second;
+    for (unsigned int i=0; i<wordList.size(); i++) {
+      outputFile << wordList[i] << endl << "        ";
+    } outputFile << endl;
+  }
+  outputFile.close();
+
+
+
+  /*map<string,vector<string> > followingWords;
+    [keyWord], [followingWords]
+    {it},      {can, was, had}
+    {am},      {the, our}
+    {to},      {you, ask, the, put, say}
+  */
+
+  // Add to lengthOfWords map
+  map<string,vector<string> > followingWords;
+  for(unsigned int i=0; i < wordPairs.size() - 1; i++) {
+    string firstWord = wordPairs[i][0];
+    followingWords[firstWord].push_back(wordPairs[i][1]);
+  }
+
+  // Print the map to a file
+  outputFile.open ("output-followingWords.txt");
+  for(map<string,vector<string> >::iterator iterator = followingWords.begin();
+              iterator != followingWords.end();
+              iterator++) {
+    outputFile << "Key:    " << iterator->first << endl;
+    outputFile << "Values: ";
+    vector<string> wordList = iterator->second;
+    for (unsigned int i=0; i<wordList.size(); i++) {
+      outputFile << wordList[i] << endl << "        ";
+    } outputFile << endl;
+  }
+  outputFile.close();
+
+
+
+  // Now let's run the actual snowball poem generator
+  stringstream ss;
+  ss << "output-snowballPoems-" << time(NULL) << ".txt";
+  string fileName = ss.str();
+  outputFile.open (fileName.c_str(), fstream::app);
+  srand (time(NULL));
+
+  // Make a thousand of them!
+  for (int i = 0; i < 1000; i++ ) {
+
+    string chosenWord;
+    unsigned int randIndex;
+    string oneLetterWords[3] = {"a","i","o"};
+
+    // There are three approaches here
+    unsigned int startMethod = rand() % 3 + 1;
+    switch (startMethod) {
+
+      // Select a random 1 letter word from {lengthOfWords}
+      case 1:
+        randIndex = rand() % lengthOfWords[1].size();
+        chosenWord = lengthOfWords[1][randIndex];
+        outputFile << "1 " << chosenWord << endl;
+        break;
+
+      // Just choose between one of A, I, or O
+      case 2:
+        randIndex = rand() % 3;
+        chosenWord = oneLetterWords[randIndex];
+        outputFile << "1 " << chosenWord << endl;
+        break;
+
+      // Select a 2 letter word, and use "o" as the first line
+      case 3:
+        randIndex = rand() % lengthOfWords[2].size();
+        chosenWord = lengthOfWords[2][randIndex];
+        outputFile << "1 o" << endl;
+        outputFile << "2 " << chosenWord << endl;
+        break;
+    }
+
+    // Find a random matching word in {followingWords}
+    // Loop through the tree until it reaches a dead branch
+    do {
+      randIndex = rand() % followingWords[chosenWord].size();
+      chosenWord = followingWords[chosenWord][randIndex];
+      outputFile << chosenWord.length() << " " << chosenWord << endl;
+    } while (followingWords[chosenWord].size() != 0);
+    outputFile << endl;
+  }
+  outputFile.close();
+
+  return 0;
+}
