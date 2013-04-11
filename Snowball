@@ -265,7 +265,7 @@ int main () {
     string oneLetterWords[3] = {"a","i","o"};
 
     // There are three approaches here
-    unsigned int startMethod = (rand() % 2) * 2 + 1;
+    unsigned int startMethod = rand() % 3 + 1;
 
     switch (startMethod) {
 
