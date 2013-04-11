@@ -111,6 +111,9 @@ hungry
 
 using namespace std;
 
+// Should the Pairs vector be deduped?
+bool uniqueWordPairs = true;
+
 int main () {
   vector< vector<string> > wordPairs;
 
@@ -164,6 +167,14 @@ int main () {
 
     }
     inputFile.close();
+  }
+
+  // Sort it and get rid of duplicates
+  if (uniqueWordPairs) {
+    std::sort (wordPairs.begin(), wordPairs.end());
+    vector< vector<string> >::iterator it;
+    it = std::unique (wordPairs.begin(), wordPairs.end());
+    wordPairs.resize( std::distance(wordPairs.begin(),it) );
   }
 
   // Read it back out to a file
@@ -254,7 +265,8 @@ int main () {
     string oneLetterWords[3] = {"a","i","o"};
 
     // There are three approaches here
-    unsigned int startMethod = rand() % 3 + 1;
+    unsigned int startMethod = (rand() % 2) * 2 + 1;
+
     switch (startMethod) {
 
       // Select a random 1 letter word from {lengthOfWords}
