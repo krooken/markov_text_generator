@@ -374,13 +374,19 @@ void createRandomMarkov() {
     string chosenWord = wordPairsAll[randIndex][0];
     outputFile << chosenWord << " ";
 
-    // Find a random matching word in {followingWordsAll}
-    // Loop through the tree until it reaches a dead branch
+    // Find a random matching word in {followingWordsAll}.
+    // Loop through the tree until it reaches a dead branch  OR  we encounter a
+    //   key that only contains one value, and the value is the same as the key.
+    //   (Example: The phrase "silokwe silokwe" from Huxley's Brave New World.)
     do {
       randIndex = rand() % followingWordsAll[chosenWord].size();
       chosenWord = followingWordsAll[chosenWord][randIndex];
       outputFile << chosenWord << " ";
-    } while (followingWordsAll[chosenWord].size() != 0);
+    } while ( (followingWordsAll[chosenWord].size() != 0) &&
+              ( (followingWordsAll[chosenWord].size() != 1) ||
+                (followingWordsAll[chosenWord][0] != chosenWord)
+              )
+            );
     outputFile << endl;
   }
   outputFile.close();
