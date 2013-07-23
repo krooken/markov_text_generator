@@ -25,7 +25,7 @@ module MarkovTextGenerator
             word.downcase!
             word_tuple << word
             word_tuple.shift
-            unless word_tuple[0].empty?
+            unless word_tuple[0].nil?
               word_tuples_all << word_tuple
           
               #$wordPairsGrowing << [previousWord, word] if previousWord.length == word.length - 1
