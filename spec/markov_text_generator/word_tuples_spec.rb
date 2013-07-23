@@ -44,5 +44,15 @@ module MarkovTextGenerator
       end
       
     end
+    
+    describe "initialize" do
+      
+      it "needs an array of arrays as input argument" do
+        expect{WordTuples.new}.to raise_error(ArgumentError)
+        expect{WordTuples.new([[]])}.to_not raise_error
+      end
+      
+    end
+    
   end
 end
