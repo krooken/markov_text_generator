@@ -54,5 +54,20 @@ module MarkovTextGenerator
       
     end
     
+    describe "each" do
+    
+      before :each do
+        @input_tuples = [["a","b"],["c","d"]]
+        @word_tuples = WordTuples.new(@input_tuples)
+      end
+    
+      it "should iterate through word tuples" do
+        i = 0
+        @word_tuples.each do |tuple|
+          expect(tuple).to eq(@input_tuples[i])
+          i += 1
+        end
+      end
+    end
   end
 end

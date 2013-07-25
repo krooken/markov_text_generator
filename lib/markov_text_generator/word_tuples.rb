@@ -43,6 +43,10 @@ module MarkovTextGenerator
       @word_tuples = word_tuples
     
     end
+    
+    def each
+      @word_tuples.each
+    end
   
   end
 end
