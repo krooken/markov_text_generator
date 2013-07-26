@@ -1,4 +1,4 @@
-module MarkovTextGenrator
+module MarkovTextGenerator
   class MarkovGenerator
   
   
