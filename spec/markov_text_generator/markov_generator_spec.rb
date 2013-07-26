@@ -18,7 +18,7 @@ module MarkovTextGenerator
     describe "new" do
       it "should generate a random text from the input" do
         allow(@word_map).to receive(:to_hash).and_return({"a"=>{"b"=>["c","d"]}})
-        expect(Random).to receive(:rand).and_return(0)
+        expect(Random).to receive(:rand).at_least(:once).and_return(0)
         generator = MarkovGenerator.new(@word_map)
         expect(generator.to_s).to eq("a b c")
       end
