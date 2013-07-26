@@ -16,11 +16,19 @@ module MarkovTextGenerator
         expect(@word_tuples).to have_received(:each)
       end
     
-      it "should create a map with the first word in each tuple as key" do
-        WordMap.new(@word_tuples)
-        pending
+      it "should create a map within map... with the words in each tuple as keys" do
+        word_map = WordMap.new(@word_tuples)
+        expect(word_map.to_hash).to eq({"a"=>{"b"=>["c","d"]},"b"=>{"c"=>"d"}})
       end
   
     end
+    
+    describe "to_hash" do
+      it "should return a hash" do
+        word_map = WordMap.new(@word_tuples)
+        expect(word_map.to_hash.respond_to?(:keys)).to eq(true)
+      end
+    end
+    
   end
 end
