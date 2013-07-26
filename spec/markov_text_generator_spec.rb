@@ -45,7 +45,7 @@ module MarkovTextGenerator
       it "should write the given number of paragraphs to the output file" do
         number_of_pars = 10
         markov_generator = double("markov_generator")
-        allow(MarkovGenerator.new).to receive(:new).and_return(markov_generator)
+        allow(MarkovGenerator).to receive(:new).and_return(markov_generator)
         expect(markov_generator).to receive(:to_s).exactly(number_of_pars).times.and_return("a")
         MarkovTextGenerator.create_random_markov("input_file_name","output_file_prefix",number_of_pars)
         expect(@output_file).to eq("a\na\na\na\na\na\na\na\na\na\n")
