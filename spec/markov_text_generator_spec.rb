@@ -4,6 +4,7 @@ module MarkovTextGenerator
     describe "create_random_markov" do
     
       before :each do
+        allow(STDOUT).to receive(:puts)
         @input_file = ["a","b"]
         @output_file = ""
         allow(File).to receive(:open).and_yield(@output_file)
@@ -69,7 +70,7 @@ module MarkovTextGenerator
       
       it "should append a string based on current time, and '.txt' to the output file" do
         time = Time.new(2000,07,25,12,54,32)
-        expect(Time).to receive(:now).and_return(time)
+        expect(Time).to receive(:now).at_least(:once).and_return(time)
         MarkovTextGenerator.create_random_markov("input_file_name","output_file_prefix")
         expect(File).to have_received(:open).with("output_file_prefix" + "-" + time.to_i.to_s + ".txt", anything()).at_least(:once)
       end
