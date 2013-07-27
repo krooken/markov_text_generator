@@ -4,8 +4,8 @@ require 'markov_text_generator/word_map'
 require 'markov_text_generator/markov_generator'
 
 module MarkovTextGenerator
-  def self.create_random_markov(input_file_name, output_file_name, nr_of_paragraphs = 1000)
-    word_tuples = WordTuples.scan_file(input_file_name)
+  def self.create_random_markov(input_file_name, output_file_name, nr_of_paragraphs = 1000, tuples_length = 3)
+    word_tuples = WordTuples.scan_file(input_file_name, tuples_length)
     word_tuples.save_to_file("ruby-output-wordPairsAll.txt")
     word_map = WordMap.new(word_tuples)
     word_map.save_to_file("ruby-output-followingWordsAll.txt")

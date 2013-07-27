@@ -27,11 +27,24 @@ module MarkovTextGenerator
         expect{MarkovTextGenerator.create_random_markov("input_file_name","output_file_prefix",1)}.to_not raise_error
       end
       
+      it "should allow an optional value for tuple length" do
+        expect{MarkovTextGenerator.create_random_markov("input_file_name","output_file_prefix",1,1)}.to_not raise_error
+      end
+      
       it "should scan the input file" do
         input_file_name = "input_file_name"
         text_generator = MarkovTextGenerator.create_random_markov(input_file_name,"output_file_prefix")
         expect(WordTuples).to have_received(:scan_file) do |args|
           expect(args.include?(input_file_name)).to eq true
+        end
+      end
+      
+      it "should scan for tuples of given length" do
+        input_file_name = "input_file_name"
+        tuples_length = 4
+        text_generator = MarkovTextGenerator.create_random_markov(input_file_name,"output_file_prefix",10,tuples_length)
+        expect(WordTuples).to have_received(:scan_file) do |args|
+          expect(args.include?(tuples_length)).to eq true
         end
       end
       
