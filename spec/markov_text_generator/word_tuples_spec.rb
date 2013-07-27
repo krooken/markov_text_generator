@@ -69,5 +69,20 @@ module MarkovTextGenerator
         end
       end
     end
+    
+    describe "save_to_file" do
+    
+      it "should save each tuple in the internal list to a separate row in the given file" do
+        input_tuples = [["a","b","c"],["d","e","f"]]
+        word_tuples = WordTuples.new(input_tuples)
+        file = ""
+        allow(File).to receive(:open).and_yield(file)
+        word_tuples.save_to_file("output_file_name")
+        expect(file).to eq("a b c\nd e f")
+        expect(File).to have_received(:open).with("output_file_name",anyarg())
+      end
+      
+    end
+    
   end
 end

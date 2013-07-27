@@ -30,5 +30,18 @@ module MarkovTextGenerator
       end
     end
     
+    describe "save_to_file" do
+    
+      it "should save the tree of keys and values" do
+        word_map = WordMap.new(@word_tuples)
+        file = ""
+        allow(File).to receive(:open).and_yield(file)
+        word_map.save_to_file("output_file_name")
+        expect(file).to eq("a b c\n    d\nb c d")
+        expect(File).to have_received(:open).with("output_file_name",anyarg())
+      end
+      
+    end
+    
   end
 end
