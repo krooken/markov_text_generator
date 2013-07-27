@@ -12,6 +12,8 @@ module MarkovTextGenerator
         allow(WordTuples).to receive(:scan_file).and_return(@input_tuples)
         @input_hash = {"a"=>["b"],"b"=>["c"]}
         allow(WordMap).to receive(:new).and_return(@input_hash)
+        allow(@input_tuples).to receive(:save_to_file)
+        allow(@input_hash).to receive(:save_to_file)
       end
     
       it "should require a input filename and output file prefix" do
