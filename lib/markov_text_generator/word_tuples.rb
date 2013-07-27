@@ -26,7 +26,7 @@ module MarkovTextGenerator
             word_tuple << word
             word_tuple.shift
             unless word_tuple[0].nil?
-              word_tuples_all << word_tuple
+              word_tuples_all << word_tuple.clone
           
               #$wordPairsGrowing << [previousWord, word] if previousWord.length == word.length - 1
               #$wordPairsShrinking << [word, previousWord] if previousWord.length == word.length + 1
