@@ -43,6 +43,11 @@ module MarkovTextGenerator
         WordTuples.scan_file(1)
       end
       
+      it "should call new with the correct tuples" do
+        expect(WordTuples).to receive(:new).with([["a","b","c"],["b","c","d"],["c","d","e"],["d","e","g"],["e","g","h"],["g","h","i"]])
+        WordTuples.scan_file(3)
+      end
+      
     end
     
     describe "initialize" do
