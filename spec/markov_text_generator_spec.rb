@@ -52,7 +52,10 @@ module MarkovTextGenerator
       end
       
       it "should append a string based on current time, and '.txt' to the output file" do
-        pending
+        time = Time.new(2000,07,25,12,54,32)
+        expect(Time).to receive(:now).and_return(time)
+        MarkovTextGenerator.create_random_markov("input_file_name","output_file_prefix")
+        expect(File).to have_received(:open).with("output_file_prefix" + "-" + time.to_i.to_s + ".txt").at_least(:once)
       end
       
     end
