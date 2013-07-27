@@ -57,6 +57,15 @@ module MarkovTextGenerator
         end
       end
     end
+    
+    def filter
+      filtered_tuples = []
+      @word_tuples.each do |tuple|
+        keep = yield tuple
+        filtered_tuples << tuple if keep
+      end
+      WordTuples.new(filtered_tuples)
+    end
   
   end
 end

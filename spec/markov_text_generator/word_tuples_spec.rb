@@ -96,7 +96,7 @@ module MarkovTextGenerator
         word_tuples = WordTuples.new(input_tuples)
         word_tuples1 = word_tuples.filter do |tuple|
           keep = true
-          tuple.(length-1).times do |index|
+          (tuple.length-1).times do |index|
             keep &= tuple[index].length == tuple[index+1].length-1
           end
           keep
