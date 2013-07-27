@@ -60,12 +60,12 @@ module MarkovTextGenerator
       end
       
       it "should print word tuples to a file" do
-        expect(@input_tuples).to receive(:print_to_file).with("ruby-output-wordPairsAll.txt")
+        expect(@input_tuples).to receive(:save_to_file).with("ruby-output-wordPairsAll.txt")
         MarkovTextGenerator.create_random_markov("input_file_name","output_file_name")
       end
       
       it "should print word map to a file" do
-        expect(@input_hash).to receive(:print_to_file).with("ruby-output-followingWordsAll.txt")
+        expect(@input_hash).to receive(:save_to_file).with("ruby-output-followingWordsAll.txt")
         MarkovTextGenerator.create_random_markov("input_file_name","output_file_name")
       end
       
