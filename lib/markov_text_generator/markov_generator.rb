@@ -2,6 +2,7 @@ module MarkovTextGenerator
   class MarkovGenerator
   
     def initialize(word_map)
+      max_paragraph_length = 1000
       chosen_words = []
       current_hash = word_map.to_hash
       while current_hash.respond_to?(:keys)
@@ -12,7 +13,7 @@ module MarkovTextGenerator
       end
       word_array = current_hash
       generated_text = chosen_words.clone
-      until word_array.nil? or (word_array.length == 1 and chosen_words[-1] == word_array[0])
+      until word_array.nil? or (word_array.length == 1 and chosen_words[-1] == word_array[0]) or generated_text.length >= max_paragraph_length
         rand_index = Random.rand(word_array.length)
         chosen_word = word_array[rand_index]
         chosen_words.push(chosen_word).shift
