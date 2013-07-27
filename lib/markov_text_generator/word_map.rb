@@ -30,5 +30,39 @@ module MarkovTextGenerator
       @word_map.clone
     end
     
+    def save_to_file(output_file_name)
+      indent = ""
+      File.open(output_file_name, "w") do |file|
+        print_hash(@word_map, file, indent)
+      end
+    end
+    
+    def print_hash(hash, file, indent)
+      if not hash.respond_to?(:each_key)
+        first = true
+        hash.each do |value|
+          if first
+            file << value.to_s << "\n"
+            first = false
+          else
+            file << indent << value.to_s << "\n"
+          end
+        end
+        file << "\n"
+      else
+        first = true
+        hash.each_key do |key|
+          if first
+            first = false
+          else
+            file << indent
+          end
+          file << key.to_s
+          file << " "
+          print_hash(hash[key], file, indent + "  ")
+        end
+      end
+    end
+    
   end
 end

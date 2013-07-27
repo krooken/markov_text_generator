@@ -78,8 +78,8 @@ module MarkovTextGenerator
         file = ""
         allow(File).to receive(:open).and_yield(file)
         word_tuples.save_to_file("output_file_name")
-        expect(file).to eq("a b c\nd e f")
-        expect(File).to have_received(:open).with("output_file_name",anyarg())
+        expect(file).to eq("a b c\nd e f\n")
+        expect(File).to have_received(:open).with("output_file_name",anything())
       end
       
     end

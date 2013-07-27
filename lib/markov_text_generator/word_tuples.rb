@@ -47,6 +47,14 @@ module MarkovTextGenerator
     def each
       @word_tuples.each
     end
+    
+    def save_to_file(output_file_name)
+      File.open(output_file_name, "w") do |file|
+        @word_tuples.each do |tuple|
+          file << tuple.join(" ") << "\n"
+        end
+      end
+    end
   
   end
 end
