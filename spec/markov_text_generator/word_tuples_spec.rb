@@ -90,5 +90,20 @@ module MarkovTextGenerator
       
     end
     
+    describe "filter" do
+      it "should accept a block that determines if the tuple should be kept or not" do
+        input_tuples = [["a","bc","c"],["d","ee","fff"],["e","f","gg"]]
+        word_tuples = WordTuples.new(input_tuples)
+        word_tuples1 = word_tuples.filter do |tuple|
+          keep = true
+          tuple.(length-1).times do |index|
+            keep &= tuple[index].length == tuple[index+1].length-1
+          end
+          keep
+        end
+        word_tuples1.each {|tuple| expect(tuple).to eq(["d","ee","fff"])}
+      end
+    end
+    
   end
 end
