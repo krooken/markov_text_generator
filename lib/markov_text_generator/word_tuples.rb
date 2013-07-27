@@ -3,7 +3,7 @@ module MarkovTextGenerator
   
     @@default_input_file_name = "input-raw.txt"
     @@default_word_pattern = /\b[a-zA-Z]+\b/
-    @@default_number_of_tuples = 6
+    @@default_number_of_tuples = 3
     
     def self.scan_file(*args)
     
@@ -45,7 +45,9 @@ module MarkovTextGenerator
     end
     
     def each
-      @word_tuples.each
+      @word_tuples.each do |elt|
+        yield elt
+      end
     end
     
     def save_to_file(output_file_name)

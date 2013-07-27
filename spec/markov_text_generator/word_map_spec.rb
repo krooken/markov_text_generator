@@ -4,21 +4,24 @@ module MarkovTextGenerator
   describe WordMap do
   
     before :each do
-      @input_tuples = [["a","b","c"],["a","b","d"],["b","c","d"]]
-      @word_tuples = double("word_tuples")
-      allow(@word_tuples).to receive(:each).and_yield(@input_tuples)
+      rows = ["a b b", "b g"]
+      allow(File).to receive(:open).and_yield(rows)
+      @input_tuples = [["a","b","c"],["b","c","d"],["c","d","g"]]
+      #@word_tuples = double("word_tuples")
+      @word_tuples = WordTuples.scan_file
+      #allow(@word_tuples).to receive(:each).and_return(@input_tuples.each)
     end
     
     describe "new" do
     
       it "should call each on the word_tuples" do
+        expect(@word_tuples).to receive(:each).and_call_original
         WordMap.new(@word_tuples)
-        expect(@word_tuples).to have_received(:each)
       end
     
       it "should create a map within map... with the words in each tuple as keys" do
-        word_map = WordMap.new(@input_tuples)
-        expect(word_map.to_hash).to eq({"a"=>{"b"=>["c","d"]},"b"=>{"c"=>["d"]}})
+        word_map = WordMap.new(@word_tuples)
+        expect(word_map.to_hash).to eq({"a"=>{"b"=>["b"]},"b"=>{"b"=>["b","g"]}})
       end
   
     end
@@ -33,11 +36,11 @@ module MarkovTextGenerator
     describe "save_to_file" do
     
       it "should save the tree of keys and values" do
-        word_map = WordMap.new(@input_tuples)
+        word_map = WordMap.new(@word_tuples)
         file = ""
         allow(File).to receive(:open).and_yield(file)
         word_map.save_to_file("output_file_name")
-        expect(file).to eq("a b c\n    d\n\nb c d\n\n")
+        expect(file).to eq("a b b\n\nb b b\n    g\n\n")
         expect(File).to have_received(:open).with("output_file_name",anything())
       end
       

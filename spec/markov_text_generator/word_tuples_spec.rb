@@ -3,6 +3,7 @@ require 'spec_helper'
 module MarkovTextGenerator
   describe WordTuples do
     describe "scan_file" do
+    
       before :each do
         rows = ["a b c d","e g h i"]
         allow(File).to receive(:open).and_yield(rows)
