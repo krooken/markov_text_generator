@@ -8,7 +8,15 @@ module MarkovTextGenerator
         @input_file = ["a","b"]
         @output_file = ""
         @snowball_file = ""
-        allow(File).to receive(:open).and_yield(@output_file).and_yield(@snowball_file)
+        i = 0
+        allow(File).to receive(:open) do |args,&block|
+          if i == 0
+            block.call(@output_file)
+            i += 1
+          else
+            block.call(@snowball_file)
+          end
+        end
         @input_tuples = [["a","b"],["b","c"]]
         #allow(WordTuples).to receive(:new).and_return(input_tuples)
         allow(WordTuples).to receive(:scan_file).and_return(@input_tuples)
@@ -31,6 +39,8 @@ module MarkovTextGenerator
             @default_generator
           end
         end
+        allow(@markov_generator).to receive(:to_s).and_return("a")
+        allow(@snowball_generator).to receive(:to_s).and_return("s")
         allow(@default_generator).to receive(:to_s).and_return("default")
       end
     
@@ -93,16 +103,16 @@ module MarkovTextGenerator
       
       it "should write the given number of paragraphs to the output file" do
         number_of_pars = 10
-        expect(@markov_generator).to receive(:to_s).exactly(number_of_pars).times.and_return("a")
         MarkovTextGenerator.create_random_markov("input_file_name","output_file_prefix",number_of_pars)
         expect(@output_file).to eq("a\n\na\n\na\n\na\n\na\n\na\n\na\n\na\n\na\n\na\n\n")
+        expect(@markov_generator).to have_received(:to_s).exactly(number_of_pars).times
       end
       
       it "should write the given number of poems to the output file" do
         number_of_pars = 10
-        expect(@snowball_generator).to receive(:to_s).exactly(number_of_pars).times.and_return("s")
         MarkovTextGenerator.create_random_markov("input_file_name","output_file_prefix",number_of_pars)
         expect(@snowball_file).to eq("s\n\ns\n\ns\n\ns\n\ns\n\ns\n\ns\n\ns\n\ns\n\ns\n\n")
+        expect(@snowball_generator).to have_received(:to_s).exactly(number_of_pars).times
       end
       
       it "should append a string based on current time, and '.txt' to the output file" do
