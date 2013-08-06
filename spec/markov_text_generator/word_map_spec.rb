@@ -85,5 +85,30 @@ module MarkovTextGenerator
       
     end
     
+    describe "add" do
+      
+      it "should add the first element as key" do
+        pending
+      end
+      
+      it "should create a new WordMap" do
+        pending
+      end
+      
+    end
+    
+    describe "[]" do
+    
+      it "should return the WordMap corresponding to the given key" do
+        pending
+      end
+      
+      it "should raise an exception if the key doesn't exist" do
+        word_map = WordMap.new(@word_tuples)
+        expect(word_map["q"]).to raise_error(ArgumentError)
+      end
+      
+    end
+    
   end
 end
