@@ -105,7 +105,7 @@ module MarkovTextGenerator
       
       it "should raise an exception if the key doesn't exist" do
         word_map = WordMap.new(@word_tuples)
-        expect(word_map["q"]).to raise_error(ArgumentError)
+        expect{word_map["q"]}.to raise_error(ArgumentError)
       end
       
     end
