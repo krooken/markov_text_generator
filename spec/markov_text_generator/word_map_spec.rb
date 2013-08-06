@@ -6,16 +6,19 @@ module MarkovTextGenerator
     before :each do
       rows = ["a b b", "b g"]
       allow(File).to receive(:open).and_yield(rows)
-      @input_tuples = [["a","b","c"],["b","c","d"],["c","d","g"]]
-      #@word_tuples = double("word_tuples")
-      @word_tuples = WordTuples.scan_file
-      #allow(@word_tuples).to receive(:each).and_return(@input_tuples.each)
+      @input_tuples = [["a","b","b"],["b","b","b"],["b","b","g"]]
+      @word_tuples = double("word_tuples")
+      allow(@word_tuples).to receive(:each) do |args,&block|
+        @input_tuples.each do |tuple|
+          block.call(tuple)
+        end
+      end
     end
     
     describe "new" do
     
       it "should call each on the word_tuples" do
-        expect(@word_tuples).to receive(:each).and_call_original
+        expect(@word_tuples).to receive(:each)
         WordMap.new(@word_tuples)
       end
     
