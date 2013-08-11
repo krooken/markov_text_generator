@@ -2,6 +2,7 @@ require "markov_text_generator/version"
 require 'markov_text_generator/word_tuples'
 require 'markov_text_generator/word_map'
 require 'markov_text_generator/markov_generator'
+require 'markov_text_generator/word_map_weight'
 
 module MarkovTextGenerator
   def self.create_random_markov(input_file_name, output_file_name, nr_of_paragraphs = 1000, tuples_length = 3)
